@@ -13,14 +13,14 @@ import java.security.PublicKey;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-
-import org.json.JSONObject;
 
 public class App {
 
@@ -41,26 +41,25 @@ public class App {
     PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
 
     // 暗号化
-    String jsonStr = getJsonStr();
-    byte[] encrypted = encrypt(jsonStr, privateKey);
+    String plainText = getPlainText();
+    byte[] encrypted = encrypt(plainText, privateKey);
+    String encryptedText = encodeBase64(encrypted);
     System.out.println("encryptedText:");
-    System.out.println(decodeHex(encrypted));
+    System.out.println(encryptedText);
 
     // 複合化
-    String decryptText = decrypt(encrypted, publicKey);
+    String decryptText = decrypt(decodeBase64(encryptedText), publicKey);
     System.out.println("decryptText:");
     System.out.println(decryptText);
 
   }
 
   /**
-   * JSON文字列を取得
+   * 平文を取得
    */
-  private static String getJsonStr() {
-    JSONObject json = new JSONObject();
-    json.put("issuredDate", new Date());
-    json.put("product", "REPORT");
-    return json.toString();
+  private static String getPlainText() {
+    String plainText = new SimpleDateFormat("yyMMddHHmmssSSS").format(new Date()) + "," + "1000";
+    return plainText;
   }
 
   /**
@@ -80,14 +79,17 @@ public class App {
   }
 
   /**
-   * byte配列を16進数表記に変換
+   * byte配列をBase64エンコード
    */
-  private static String decodeHex(byte[] bytes) {
-    StringBuilder sb = new StringBuilder();
-    for (byte b : bytes) {
-      sb.append(String.format("%02x", b));
-    }
-    return sb.toString();
+  private static String encodeBase64(byte[] bytes) {
+    return Base64.getEncoder().encodeToString(bytes);
+  }
+
+  /**
+   * byte配列をBase64エンコード
+   */
+  private static byte[] decodeBase64(String base64str) {
+    return Base64.getDecoder().decode(base64str);
   }
 
   /**

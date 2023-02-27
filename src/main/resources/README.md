@@ -1,6 +1,7 @@
 # 鍵生成
 
 ## 秘密鍵の作成
+openssl genrsa -out private.pem 512
 openssl genrsa -out private.pem 2048
 
 ## Java向けにDER形式に変更
