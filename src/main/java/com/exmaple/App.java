@@ -58,7 +58,7 @@ public class App {
    * 平文を取得
    */
   private static String getPlainText() {
-    String plainText = new SimpleDateFormat("yyMMddHHmmssSSS").format(new Date()) + "," + "1000";
+    String plainText = new SimpleDateFormat("yyMMddHHmmssSSS").format(new Date()) + ",upgrade,5000,50000";
     return plainText;
   }
 
